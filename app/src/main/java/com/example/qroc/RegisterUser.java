@@ -31,10 +31,10 @@ public class RegisterUser extends AppCompatActivity {
     private Result result2;//用来存取邮箱是否存在的结果
     private Result result3;//用来存取验证码是否正确
     private Result result4;//注册完成后的结果
-    private int test;
+    private static final String URL = "http://10.0.2.2:8080";
 
 
-    final static Pattern partern = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
+    public final static Pattern partern = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
 
     /**
      * 验证输入的邮箱格式是否符合
@@ -105,7 +105,7 @@ public class RegisterUser extends AppCompatActivity {
                             User user = new User();
                             user.setUsername(userName);
                             try {
-                                result1 = JsonUtils.jsonToResult(PostRequest.post("http://10.0.2.2:8080/existUsername", JsonUtils.objectToJson(user)));
+                                result1 = JsonUtils.jsonToResult(PostRequest.post(URL + "/existUsername", JsonUtils.objectToJson(user)));
                             } catch (JsonProcessingException e) {
                                 e.printStackTrace();
                             }
@@ -127,7 +127,7 @@ public class RegisterUser extends AppCompatActivity {
                                 verifyMail.setEmail(mail);
                                 verifyMail.setCode((verifyCode.getText().toString()));
                                 try {
-                                    result3 = JsonUtils.jsonToResult(PostRequest.post("http://10.0.2.2:8080/verify", JsonUtils.objectToJson(verifyMail)));
+                                    result3 = JsonUtils.jsonToResult(PostRequest.post(URL+"/verify", JsonUtils.objectToJson(verifyMail)));
                                 } catch (JsonProcessingException e) {
                                     e.printStackTrace();
                                 }
@@ -150,7 +150,7 @@ public class RegisterUser extends AppCompatActivity {
                                     user.setEmail(mail);
                                     user.setPassword(passport);
                                     try {
-                                        result4 = JsonUtils.jsonToResult(PostRequest.post("http://10.0.2.2:8080/register", JsonUtils.objectToJson(user)));
+                                        result4 = JsonUtils.jsonToResult(PostRequest.post(URL+"/register", JsonUtils.objectToJson(user)));
                                     } catch (JsonProcessingException e) {
                                         e.printStackTrace();
                                     }
@@ -191,7 +191,7 @@ public class RegisterUser extends AppCompatActivity {
                             user.setEmail(mail);
                             String response = null;
                             try {
-                                response = PostRequest.post("http://10.0.2.2:8080/existEmail", JsonUtils.objectToJson(user));
+                                response = PostRequest.post(URL+"/existEmail", JsonUtils.objectToJson(user));
                             } catch (JsonProcessingException e) {
                                 e.printStackTrace();
                             }
@@ -239,7 +239,7 @@ public class RegisterUser extends AppCompatActivity {
                                 Mail mailTest = new Mail();
                                 mailTest.setEmail(mail);
                                 try {
-                                    String s = PostRequest.post("http://10.0.2.2:8080/sendVerifyCode",JsonUtils.objectToJson(mailTest));
+                                    String s = PostRequest.post(URL + "/sendVerifyCode",JsonUtils.objectToJson(mailTest));
                                 } catch (JsonProcessingException e) {
                                     e.printStackTrace();
                                 }
