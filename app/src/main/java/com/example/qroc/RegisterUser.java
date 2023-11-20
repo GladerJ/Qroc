@@ -31,6 +31,7 @@ public class RegisterUser extends AppCompatActivity {
     private Result result2;//用来存取邮箱是否存在的结果
     private Result result3;//用来存取验证码是否正确
     private Result result4;//注册完成后的结果
+    private int test;
 
 
     final static Pattern partern = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
@@ -75,7 +76,6 @@ public class RegisterUser extends AppCompatActivity {
         EditText email = findViewById(R.id.email);
         //提交按钮
         Button submit = findViewById(R.id.submit);
-
         //提交密码
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
