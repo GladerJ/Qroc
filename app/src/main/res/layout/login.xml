@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
+              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
@@ -63,7 +63,7 @@
                     android:textColorHint="@color/black"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:text=""/>
+                    android:text="" tools:ignore="TouchTargetSizeCheck"/>
 
 
         </LinearLayout>
