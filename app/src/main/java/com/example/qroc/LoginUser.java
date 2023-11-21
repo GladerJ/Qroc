@@ -31,7 +31,6 @@ public class LoginUser extends AppCompatActivity {
             public void onClick(@NonNull View widget) {
                 Intent intent = new Intent(LoginUser.this,RegisterUser.class);
                 startActivity(intent);
-
             }
 
         };
