@@ -18,7 +18,6 @@ public class LoginUser extends AppCompatActivity {
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-
         /**从登录界面通过点击“注册用户”跳转到RegisterUser页面
          *
          */
