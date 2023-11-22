@@ -34,9 +34,9 @@ import java.util.regex.Pattern;
 
 public class LoginUser extends AppCompatActivity {
     //用来存储登录结果
+
     private Result result1;
-
-
+    private Result result2;
 
     /**
      * 判断用户名是否合法
@@ -52,6 +52,50 @@ public class LoginUser extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //子线程开始
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+                Result r = new Result();
+                r.setData(MMKVUtils.getString("token"));
+                String json = null;
+                try {
+                    json = JsonUtils.objectToJson(r);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                String respond = PostRequest.post(RegisterUser.URL + "/verifyToken", json);
+                try {
+                    result2 = JsonUtils.jsonToResult(respond);
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        thread.start();
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //子线程结束
+        System.out.println("result2::::"+result2.getCode());
+
+        if(result2.getCode()==1){
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    Intent intent = new Intent(LoginUser.this, Main.class);
+                    startActivity(intent);
+                    finish();
+                }
+            };
+            return;
+        }
+
         setContentView(R.layout.login);
 
         /**从登录界面通过点击“注册用户”跳转到RegisterUser页面
@@ -148,6 +192,11 @@ public class LoginUser extends AppCompatActivity {
 
                         MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
                         MMKVUtils.putString("token",(String)result1.getData());
+
+                        Intent intent = new Intent(LoginUser.this, Main.class);
+                        startActivity(intent);
+                        finish();
+
                     }
                 }
 
