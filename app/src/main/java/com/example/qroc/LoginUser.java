@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.example.qroc.pojo.User;
 import com.example.qroc.util.JsonUtils;
+import com.example.qroc.util.MMKVUtils;
 import com.example.qroc.util.PostRequest;
 import com.example.qroc.util.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,10 +34,9 @@ import java.util.regex.Pattern;
 
 public class LoginUser extends AppCompatActivity {
     //用来存储登录结果
-    private Result result1;
 
-    //存储和读取token
-    private MMKV mmkv = MMKV.defaultMMKV();
+    private Result result1;
+    private Result result2;
 
     /**
      * 判断用户名是否合法
@@ -52,6 +52,50 @@ public class LoginUser extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //子线程开始
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+                Result r = new Result();
+                r.setData(MMKVUtils.getString("token"));
+                String json = null;
+                try {
+                    json = JsonUtils.objectToJson(r);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                String respond = PostRequest.post(RegisterUser.URL + "/verifyToken", json);
+                try {
+                    result2 = JsonUtils.jsonToResult(respond);
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        thread.start();
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //子线程结束
+        System.out.println("result2::::"+result2.getCode());
+
+        if(result2.getCode()==1){
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    Intent intent = new Intent(LoginUser.this, Main.class);
+                    startActivity(intent);
+                    finish();
+                }
+            };
+            return;
+        }
+
         setContentView(R.layout.login);
 
         /**从登录界面通过点击“注册用户”跳转到RegisterUser页面
@@ -62,13 +106,13 @@ public class LoginUser extends AppCompatActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                Intent intent = new Intent(LoginUser.this,RegisterUser.class);
+                Intent intent = new Intent(LoginUser.this, RegisterUser.class);
                 startActivity(intent);
             }
 
         };
 
-        stringBuilder.setSpan(clickableSpan,0,4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        stringBuilder.setSpan(clickableSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         PrivacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
         PrivacyPolicy.setHighlightColor(Color.TRANSPARENT);
         PrivacyPolicy.setText(stringBuilder);
@@ -88,27 +132,23 @@ public class LoginUser extends AppCompatActivity {
                 String userName = usernameInuput.getText().toString();
                 String passWord = passwordInput.getText().toString();
 
-                if("".equals(userName)){
+                if ("".equals(userName)) {
                     Toast.makeText(LoginUser.this, "注意用户名不能为空!", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else if(!usernameFormat(userName)){
+                } else if (!usernameFormat(userName)) {
                     Toast.makeText(LoginUser.this, "用户名只能包含大小写字母和数字!", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else if("".equals(passWord)) {
+                } else if ("".equals(passWord)) {
 //                    if("".equals(userName)){
 //                        Toast.makeText(LoginUser.this, "请先输入用户名!", Toast.LENGTH_SHORT).show();
 //                        return;
 //                    }
                     Toast.makeText(LoginUser.this, "注意密码不能为空!", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else if(passWord.length() < 6) {
+                } else if (passWord.length() < 6) {
                     Toast.makeText(LoginUser.this, "密码长度太短，请输入至少六位!", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else{
+                } else {
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -125,8 +165,8 @@ public class LoginUser extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            String respond = PostRequest.post(RegisterUser.URL + "/login",json);
-                            Log.d("登录测试",respond);
+                            String respond = PostRequest.post(RegisterUser.URL + "/login", json);
+                            Log.d("登录测试", respond);
                             try {
                                 result1 = JsonUtils.jsonToResult(respond);
 
@@ -142,14 +182,21 @@ public class LoginUser extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if(result1.getCode() == 0){
+                    if (result1.getCode() == 0) {
                         Toast.makeText(LoginUser.this, result1.getMsg(), Toast.LENGTH_SHORT).show();
                     }
-                    //Log.d("结果：",result.toString());
+
                     //跳转到主页面
-                    else{
+                    else {
                         Toast.makeText(LoginUser.this, "登陆成功！", Toast.LENGTH_SHORT).show();
-                        mmkv.encode("hello","world");
+
+                        MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+                        MMKVUtils.putString("token",(String)result1.getData());
+
+                        Intent intent = new Intent(LoginUser.this, Main.class);
+                        startActivity(intent);
+                        finish();
+
                     }
                 }
 
