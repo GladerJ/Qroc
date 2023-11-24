@@ -25,6 +25,7 @@ import com.example.qroc.util.JsonUtils;
 import com.example.qroc.util.PostRequest;
 import com.example.qroc.util.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.tencent.mmkv.MMKV;
 
 import java.io.*;
 import java.util.regex.Pattern;
@@ -33,6 +34,9 @@ import java.util.regex.Pattern;
 public class LoginUser extends AppCompatActivity {
     //用来存储登录结果
     private Result result1;
+
+    //存储和读取token
+    private MMKV mmkv = MMKV.defaultMMKV();
 
     /**
      * 判断用户名是否合法
@@ -145,7 +149,7 @@ public class LoginUser extends AppCompatActivity {
                     //跳转到主页面
                     else{
                         Toast.makeText(LoginUser.this, "登陆成功！", Toast.LENGTH_SHORT).show();
-                        BufferedWriter bw = null;
+                        mmkv.encode("hello","world");
                     }
                 }
 
