@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context="com.example.qroc.MainActivity">
+
+        <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/tab"/>
+
+        <RadioGroup
+                android:id="@+id/tab"
+                android:layout_width="fill_parent"
+                android:layout_height="55dp"
+                android:gravity="center_vertical"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+            <RadioButton
+                    android:id="@+id/zy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:paddingLeft="0dp"
+                    android:drawableTop="@drawable/zy"
+                    android:text="首页" />
+
+            <RadioButton
+                    android:id="@+id/me"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingLeft="0dp"
+                    android:drawableTop="@drawable/me_s"
+                    android:text="我" />
+        </RadioGroup>
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
