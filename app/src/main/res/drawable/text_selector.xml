@@ -1,0 +1,5 @@
+<!-- res/drawable/text_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@android:color/darker_gray" /> <!-- 点击时的背景 -->
+    <item android:drawable="@android:color/transparent" /> <!-- 默认背景 -->
+</selector>

@@ -77,18 +77,17 @@ public class LoginUser extends AppCompatActivity {
         });
         thread.start();
         try {
-            thread.join(1000);
+            thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         //子线程结束
-        System.out.println("result2::::"+result2.getCode());
 
         if(result2.getCode()==1){
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
-                    Intent intent = new Intent(LoginUser.this, Main.class);
+                    Intent intent = new Intent(LoginUser.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -128,15 +127,17 @@ public class LoginUser extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                submit.setEnabled(false);
                 String userName = usernameInuput.getText().toString();
                 String passWord = passwordInput.getText().toString();
 
                 if ("".equals(userName)) {
                     Toast.makeText(LoginUser.this, "注意用户名不能为空!", Toast.LENGTH_SHORT).show();
+                    submit.setEnabled(true);
                     return;
                 } else if (!usernameFormat(userName)) {
                     Toast.makeText(LoginUser.this, "用户名只能包含大小写字母和数字!", Toast.LENGTH_SHORT).show();
+                    submit.setEnabled(true);
                     return;
                 } else if ("".equals(passWord)) {
 //                    if("".equals(userName)){
@@ -144,9 +145,11 @@ public class LoginUser extends AppCompatActivity {
 //                        return;
 //                    }
                     Toast.makeText(LoginUser.this, "注意密码不能为空!", Toast.LENGTH_SHORT).show();
+                    submit.setEnabled(true);
                     return;
                 } else if (passWord.length() < 6) {
                     Toast.makeText(LoginUser.this, "密码长度太短，请输入至少六位!", Toast.LENGTH_SHORT).show();
+                    submit.setEnabled(true);
                     return;
                 } else {
                     Thread thread = new Thread(new Runnable() {
@@ -184,6 +187,7 @@ public class LoginUser extends AppCompatActivity {
                     }
                     if (result1.getCode() == 0) {
                         Toast.makeText(LoginUser.this, result1.getMsg(), Toast.LENGTH_SHORT).show();
+                        submit.setEnabled(true);
                     }
 
                     //跳转到主页面
@@ -193,7 +197,7 @@ public class LoginUser extends AppCompatActivity {
                         MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
                         MMKVUtils.putString("token",(String)result1.getData());
 
-                        Intent intent = new Intent(LoginUser.this, Main.class);
+                        Intent intent = new Intent(LoginUser.this, MainActivity.class);
                         startActivity(intent);
                         finish();
 
