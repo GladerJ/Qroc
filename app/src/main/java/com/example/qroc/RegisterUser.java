@@ -37,7 +37,7 @@ public class RegisterUser extends AppCompatActivity {
     private Result result2;//用来存取邮箱是否存在的结果
     private Result result3;//用来存取验证码是否正确
     private Result result4;//注册完成后的结果
-    public static final String URL = "http://192.168.246.243:8080";
+    public static final String URL = "http://192.168.0.197:8080";
 
 
     public final static Pattern partern = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");

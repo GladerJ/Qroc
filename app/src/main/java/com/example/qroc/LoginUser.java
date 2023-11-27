@@ -1,6 +1,7 @@
 package com.example.qroc;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,13 +12,12 @@ import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.example.qroc.pojo.User;
@@ -27,6 +27,7 @@ import com.example.qroc.util.PostRequest;
 import com.example.qroc.util.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tencent.mmkv.MMKV;
+import org.w3c.dom.Text;
 
 import java.io.*;
 import java.util.regex.Pattern;
@@ -52,51 +53,34 @@ public class LoginUser extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //子线程开始
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
-                Result r = new Result();
-                r.setData(MMKVUtils.getString("token"));
-                String json = null;
-                try {
-                    json = JsonUtils.objectToJson(r);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                String respond = PostRequest.post(RegisterUser.URL + "/verifyToken", json);
-                try {
-                    result2 = JsonUtils.jsonToResult(respond);
 
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //子线程结束
-
-        if(result2.getCode()==1){
-            ClickableSpan clickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(@NonNull View widget) {
-                    Intent intent = new Intent(LoginUser.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            };
-            return;
-        }
 
         setContentView(R.layout.login);
 
+        TextView agreementSee = findViewById(R.id.agreement_see);
+        CheckBox agreementConfirm = findViewById(R.id.agreement_confirm);
+        agreementSee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 在这里编写弹出用户协议和隐私政策的操作
+                // 例如，显示一个对话框
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginUser.this);
+                builder.setTitle("用户协议与隐私政策");
+                builder.setMessage(TextMessage.USER_NEED_READ);
+                builder.setPositiveButton("同意", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        agreementConfirm.setChecked(true);
+                    }
+                });
+                builder.setNegativeButton("不同意", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        agreementConfirm.setChecked(false);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
         /**从登录界面通过点击“注册用户”跳转到RegisterUser页面
          *
          */
@@ -130,7 +114,11 @@ public class LoginUser extends AppCompatActivity {
                 submit.setEnabled(false);
                 String userName = usernameInuput.getText().toString();
                 String passWord = passwordInput.getText().toString();
-
+                if(!agreementConfirm.isChecked()){
+                    Toast.makeText(LoginUser.this, "请先同意用户协议与隐私政策!", Toast.LENGTH_SHORT).show();
+                    submit.setEnabled(true);
+                    return;
+                }
                 if ("".equals(userName)) {
                     Toast.makeText(LoginUser.this, "注意用户名不能为空!", Toast.LENGTH_SHORT).show();
                     submit.setEnabled(true);
