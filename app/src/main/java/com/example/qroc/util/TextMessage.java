@@ -1,4 +1,4 @@
-package com.example.qroc;
+package com.example.qroc.util;
 
 public class TextMessage {
     public static final String USER_NEED_READ = "【Qroc 用户协议】\n" +

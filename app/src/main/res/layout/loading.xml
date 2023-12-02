@@ -22,7 +22,7 @@
                 android:fontFamily="sans-serif-medium"/>
         <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="429dp" app:srcCompat="@drawable/login" android:id="@+id/imageView"/>
+                android:layout_height="345dp" app:srcCompat="@drawable/login" android:id="@+id/imageView"/>
         <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:id="@+id/progressBar"/>
         <TextView
                 android:layout_width="match_parent"
-                android:layout_height="95dp" android:id="@+id/textView6"/>
+                android:layout_height="67dp" android:id="@+id/textView6"/>
         <TextView
                 android:text="鹏创科技服务支持"
                 android:layout_width="match_parent"

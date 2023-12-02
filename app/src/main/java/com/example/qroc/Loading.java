@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.qroc.handler.MyAsyncTask;
 import com.example.qroc.util.Result;
+import com.example.qroc.util.TextMessage;
 
 public class Loading extends AppCompatActivity {
 

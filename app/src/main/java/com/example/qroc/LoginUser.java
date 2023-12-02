@@ -1,35 +1,24 @@
 package com.example.qroc;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import com.example.qroc.pojo.User;
-import com.example.qroc.util.JsonUtils;
-import com.example.qroc.util.MMKVUtils;
-import com.example.qroc.util.PostRequest;
-import com.example.qroc.util.Result;
+import com.example.qroc.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tencent.mmkv.MMKV;
-import org.w3c.dom.Text;
 
-import java.io.*;
 import java.util.regex.Pattern;
 
 

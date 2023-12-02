@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollview">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/mainLayout"
+            tools:context=".MainActivity">
+
+        <!-- 添加问卷标题输入框 -->
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="问卷标题"
+                android:id="@+id/questionnaireTitleEditText"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:gravity="center"
+        android:inputType="text"/>
+
+        <!-- 添加题目布局 -->
+        <!-- 其他布局元素可以放在这里 -->
+
+        <Button
+                android:layout_alignParentBottom="true"
+                android:id="@+id/createLayoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="增加题目"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center_horizontal"
+        />
+
+        <Button
+                android:layout_alignParentBottom="true"
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="保存问卷"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center_horizontal"
+        />
+
+    </LinearLayout>
+</ScrollView>
