@@ -28,10 +28,11 @@
                 android:layout_margin="8dp"
                 android:padding="16dp">
 
-            <TextView
+            <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="搜索问卷"
+                    android:textColor="#000000"
                     android:background="@drawable/text_selector" android:textSize="20sp"/>
 
         </androidx.cardview.widget.CardView>
@@ -42,11 +43,12 @@
                 android:layout_margin="8dp"
                 android:padding="16dp">
 
-            <TextView
+            <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="创建问卷"
-                    android:background="@drawable/text_selector" android:textSize="20sp"/>
+                    android:textColor="#000000"
+                    android:background="@drawable/text_selector" android:textSize="20sp" android:id="@+id/create_it"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -56,10 +58,11 @@
                 android:layout_margin="8dp"
                 android:padding="16dp">
 
-            <TextView
+            <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="已有问卷"
+                    android:textColor="#000000"
                     android:background="@drawable/text_selector" android:textSize="20sp"/>
 
         </androidx.cardview.widget.CardView>

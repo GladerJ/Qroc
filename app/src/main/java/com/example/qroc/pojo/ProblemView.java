@@ -7,24 +7,24 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Problem {
+public class ProblemView {
     private LinearLayout linearLayout;
     private TextView id;
     private ArrayList<EditText> options;
     private ArrayList<TextView> optionsTv;
 
-    public Problem(LinearLayout linearLayout, TextView id, ArrayList<EditText> options, ArrayList<TextView> optionsTv) {
+    public ProblemView(LinearLayout linearLayout, TextView id, ArrayList<EditText> options, ArrayList<TextView> optionsTv) {
         this.linearLayout = linearLayout;
         this.id = id;
         this.options = options;
         this.optionsTv = optionsTv;
     }
 
-    public static Problem create(LinearLayout linearLayout, TextView id){
-        Problem problem = new Problem();
-        problem.setId(id);
-        problem.setLinearLayout(linearLayout);
-        return problem;
+    public static ProblemView create(LinearLayout linearLayout, TextView id){
+        ProblemView problemView = new ProblemView();
+        problemView.setId(id);
+        problemView.setLinearLayout(linearLayout);
+        return problemView;
     }
 
     public void addOption(EditText editText,TextView textView){
@@ -46,13 +46,13 @@ public class Problem {
         options.remove(options.size() - 1);
     }
 
-    public Problem(LinearLayout linearLayout, TextView id, ArrayList<EditText> options) {
+    public ProblemView(LinearLayout linearLayout, TextView id, ArrayList<EditText> options) {
         this.linearLayout = linearLayout;
         this.id = id;
         this.options = options;
     }
 
-    public Problem() {
+    public ProblemView() {
         options = new ArrayList<>();
         optionsTv = new ArrayList<>();
     }
@@ -85,8 +85,8 @@ public class Problem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Problem problem = (Problem) o;
-        return Objects.equals(linearLayout, problem.linearLayout) && Objects.equals(id, problem.id) && Objects.equals(options, problem.options);
+        ProblemView problemView = (ProblemView) o;
+        return Objects.equals(linearLayout, problemView.linearLayout) && Objects.equals(id, problemView.id) && Objects.equals(options, problemView.options);
     }
 
     @Override

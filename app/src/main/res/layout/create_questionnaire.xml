@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="问卷标题"
-                android:id="@+id/questionnaireTitleEditText"
+                android:id="@+id/q_title"
                 android:padding="8dp"
                 android:textSize="18sp"
                 android:textAppearance="?android:textAppearanceMedium"

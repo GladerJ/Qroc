@@ -1,12 +1,17 @@
 package com.example.qroc;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.qroc.pojo.Problem;
+import com.example.qroc.pojo.ProblemView;
+import com.example.qroc.pojo.behind.Questionnaire;
+import com.example.qroc.util.JsonUtils;
+import com.example.qroc.util.PostRequest;
+import com.example.qroc.util.QuestionnaireUtil;
+import com.example.qroc.util.Result;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.ArrayList;
 
@@ -18,15 +23,64 @@ public class CreateQuestionnaire extends AppCompatActivity {
 
     private Button save;
 
-    private ArrayList<Problem> problems;
+    private ArrayList<ProblemView> problemViews;
+
+    private EditText title;
+
+    private String username = "lpl1234";
+
+    private Result saveStatus;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        problems = new ArrayList<>();
+        problemViews = new ArrayList<>();
         setContentView(R.layout.create_questionnaire);
         save = findViewById(R.id.save);
+        title = findViewById(R.id.q_title);
+
+        save.setOnClickListener(e -> {
+            Questionnaire questionnaire = QuestionnaireUtil.createQuestionnaire(problemViews, title, username);
+            String json = null;
+            try {
+                json = JsonUtils.objectToJson(questionnaire);
+            } catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
+            save.setEnabled(false);
+            if (json != null) {
+                String finalJson = json;
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            saveStatus = JsonUtils.jsonToResult(PostRequest.post(RegisterUser.URL + "/saveQuestionnaire", finalJson));
+                        } catch (JsonProcessingException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                if(saveStatus.getCode() == 1){
+                    Toast.makeText(CreateQuestionnaire.this,"保存成功",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(CreateQuestionnaire.this,saveStatus.getMsg(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            // 执行按钮点击的操作
+
+            save.setEnabled(true);
+
+        });
 
         mainLayout = findViewById(R.id.mainLayout);
         createLayoutButton = findViewById(R.id.createLayoutButton);
@@ -70,7 +124,7 @@ public class CreateQuestionnaire extends AppCompatActivity {
         questionNumberTextView.setText(questionCount + 1 + ". ");
         newLayout.addView(questionNumberTextView);
 
-        Problem problem = Problem.create(newLayout, questionNumberTextView);
+        ProblemView problemView = ProblemView.create(newLayout, questionNumberTextView);
 
         // 创建问题输入框
         EditText questionEditText = new EditText(this);
@@ -88,7 +142,7 @@ public class CreateQuestionnaire extends AppCompatActivity {
         // 创建增加选项的按钮
         Button addOptionButton = new Button(this);
         LinearLayout.LayoutParams addOptionButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        addOptionButtonParams.setMargins(margin, margin, margin, margin); // 设置上下左右内边距
+        addOptionButtonParams.setMargins(margin, 0, 0, margin); // 设置上下左右内边距
         addOptionButton.setLayoutParams(addOptionButtonParams);
         addOptionButton.setText("+");
         buttonLayout.addView(addOptionButton);
@@ -96,22 +150,30 @@ public class CreateQuestionnaire extends AppCompatActivity {
         //减少选项按钮
         Button removeOptionButton = new Button(this);
         LinearLayout.LayoutParams removeOptionButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        removeOptionButtonParams.setMargins(margin, margin, margin, margin); // 设置上下左右内边距
         removeOptionButton.setLayoutParams(removeOptionButtonParams);
+        removeOptionButtonParams.setMargins(margin, 0, 0, margin); // 设置上下左右内边距
         removeOptionButton.setText("-");
         buttonLayout.addView(removeOptionButton);
+
 
         //删除题目
         Button removeProblemButton = new Button(this);
         LinearLayout.LayoutParams removeProblemButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        removeProblemButtonParams.setMargins(margin, margin, margin, margin); // 设置上下左右内边距
+        removeProblemButtonParams.setMargins(margin, 0, 0, margin); // 设置上下左右内边距
         removeProblemButton.setLayoutParams(removeOptionButtonParams);
         removeProblemButton.setText("删除此题");
         buttonLayout.addView(removeProblemButton);
 
+        //是否多选
+        CheckBox checkBox = new CheckBox(this);
+        LinearLayout.LayoutParams checkBoxParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        checkBox.setLayoutParams(checkBoxParams);
+        checkBoxParams.setMargins(margin, 0, 0, margin);
+        checkBox.setText("多选");
+
 
         newLayout.addView(buttonLayout);
-
+        newLayout.addView(checkBox);
 
         // 增加题目数量
         questionCount++;
@@ -144,8 +206,10 @@ public class CreateQuestionnaire extends AppCompatActivity {
                 newLayout.addView(optionEditText);
                 newLayout.removeView(buttonLayout);
                 newLayout.addView(buttonLayout);
-                problem.addOption(optionEditText, optionNumberTextView);
-
+                problemView.setLinearLayout(newLayout);
+                problemView.addOption(optionEditText, optionNumberTextView);
+                newLayout.removeView(checkBox);
+                newLayout.addView(checkBox);
 
             }
         });
@@ -153,25 +217,25 @@ public class CreateQuestionnaire extends AppCompatActivity {
         removeOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (problem.getOptions().size() == 0) return;
-                newLayout.removeView(problem.getOptions().get(problem.getOptions().size() - 1));
-                newLayout.removeView(problem.getOptionsTv().get(problem.getOptionsTv().size() - 1));
-                problem.removeOption();
+                if (problemView.getOptions().size() == 0) return;
+                newLayout.removeView(problemView.getOptions().get(problemView.getOptions().size() - 1));
+                newLayout.removeView(problemView.getOptionsTv().get(problemView.getOptionsTv().size() - 1));
+                problemView.removeOption();
             }
         });
         removeProblemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                problems.remove(problem);
-                for (int i = 0; i < problems.size(); i++) {
-                    problems.get(i).getId().setText(i + 1 + "");
+                problemViews.remove(problemView);
+                for (int i = 0; i < problemViews.size(); i++) {
+                    problemViews.get(i).getId().setText(i + 1 + "");
                 }
                 mainLayout.removeView(newLayout);
                 questionCount--;
             }
         });
 
-        problems.add(problem);
+        problemViews.add(problemView);
     }
 
 }

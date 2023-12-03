@@ -1,12 +1,15 @@
 package com.example.qroc;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton tab1, tab2;
     private List<View> views;
 
+    private String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -32,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main);
 
         initView();
+
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -89,6 +96,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        Button createButton = views.get(0).findViewById(R.id.create_it);
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 在这里处理按钮点击事件的逻辑
+                Intent intent = new Intent(MainActivity.this, CreateQuestionnaire.class);
+                startActivity(intent);
             }
         });
     }

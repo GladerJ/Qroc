@@ -174,6 +174,7 @@ public class LoginUser extends AppCompatActivity {
                         MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
                         MMKVUtils.putString("token",(String)result1.getData());
 
+
                         Intent intent = new Intent(LoginUser.this, MainActivity.class);
                         startActivity(intent);
                         finish();
