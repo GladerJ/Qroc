@@ -1,16 +1,15 @@
 package com.example.qroc;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -105,6 +104,28 @@ public class MainActivity extends AppCompatActivity {
                 // 在这里处理按钮点击事件的逻辑
                 Intent intent = new Intent(MainActivity.this, CreateQuestionnaire.class);
                 startActivity(intent);
+            }
+        });
+
+        Button searchButton = views.get(0).findViewById(R.id.search_it);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 在这里处理按钮点击事件的逻辑
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("请输入你要搜索的问卷id：");
+                final EditText searchEditText = new EditText(MainActivity.this);
+                builder.setView(searchEditText);
+                builder.setPositiveButton("搜索问卷", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String searchText = searchEditText.getText().toString();
+                        // 在这里处理搜索逻辑
+                        //performSearch(searchText);
+                    }
+                });
+                builder.setNegativeButton("取消搜索", null);
+                builder.show();
             }
         });
     }

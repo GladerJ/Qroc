@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/progressBar"/>
+
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="67dp" android:id="@+id/textView6"/>
@@ -36,5 +37,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/textView10" android:textAlignment="center"
                 android:textSize="20sp"/>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
