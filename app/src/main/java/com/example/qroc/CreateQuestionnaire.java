@@ -1,5 +1,8 @@
 package com.example.qroc;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,10 +10,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.qroc.pojo.ProblemView;
 import com.example.qroc.pojo.behind.Questionnaire;
-import com.example.qroc.util.JsonUtils;
-import com.example.qroc.util.PostRequest;
-import com.example.qroc.util.QuestionnaireUtil;
-import com.example.qroc.util.Result;
+import com.example.qroc.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.ArrayList;
@@ -42,6 +42,8 @@ public class CreateQuestionnaire extends AppCompatActivity {
         title = findViewById(R.id.q_title);
 
         save.setOnClickListener(e -> {
+            MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+            username = MMKVUtils.getString("token");
             Questionnaire questionnaire = QuestionnaireUtil.createQuestionnaire(problemViews, title, username);
             String json = null;
             try {
@@ -50,6 +52,7 @@ public class CreateQuestionnaire extends AppCompatActivity {
                 ex.printStackTrace();
             }
             save.setEnabled(false);
+
             if (json != null) {
                 String finalJson = json;
                 Thread thread = new Thread(new Runnable() {
@@ -65,11 +68,28 @@ public class CreateQuestionnaire extends AppCompatActivity {
                 thread.start();
                 try {
                     thread.join();
+
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
                 if(saveStatus.getCode() == 1){
-                    Toast.makeText(CreateQuestionnaire.this,"保存成功",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CreateQuestionnaire.this,"保存成功",Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CreateQuestionnaire.this);
+                    builder.setTitle("系统提示：").setMessage("保存成功！");
+                    builder.setIcon(R.mipmap.ic_launcher_round);
+                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(CreateQuestionnaire.this,MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    builder.setCancelable(false);
+                    builder.show();
+                    /**注册成功后跳转到MainActivity页面
+                     */
+
                 }
                 else{
                     Toast.makeText(CreateQuestionnaire.this,saveStatus.getMsg(),Toast.LENGTH_SHORT).show();

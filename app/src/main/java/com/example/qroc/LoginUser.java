@@ -43,6 +43,8 @@ public class LoginUser extends AppCompatActivity {
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+
 
         setContentView(R.layout.login);
 
@@ -96,25 +98,32 @@ public class LoginUser extends AppCompatActivity {
         //提交按钮
         Button submit = findViewById(R.id.submit);
 
+        if(intent != null){
+            String username = intent.getStringExtra("username");
+            String password = intent.getStringExtra("password");
+            if(username != null){
+                usernameInuput.setText(username);
+            }
+            if(password != null){
+                passwordInput.setText(password);
+            }
+        }
+
         //提交密码
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submit.setEnabled(false);
                 String userName = usernameInuput.getText().toString();
                 String passWord = passwordInput.getText().toString();
                 if(!agreementConfirm.isChecked()){
                     Toast.makeText(LoginUser.this, "请先同意用户协议与隐私政策!", Toast.LENGTH_SHORT).show();
-                    submit.setEnabled(true);
                     return;
                 }
                 if ("".equals(userName)) {
                     Toast.makeText(LoginUser.this, "注意用户名不能为空!", Toast.LENGTH_SHORT).show();
-                    submit.setEnabled(true);
                     return;
                 } else if (!usernameFormat(userName)) {
                     Toast.makeText(LoginUser.this, "用户名只能包含大小写字母和数字!", Toast.LENGTH_SHORT).show();
-                    submit.setEnabled(true);
                     return;
                 } else if ("".equals(passWord)) {
 //                    if("".equals(userName)){
@@ -122,13 +131,12 @@ public class LoginUser extends AppCompatActivity {
 //                        return;
 //                    }
                     Toast.makeText(LoginUser.this, "注意密码不能为空!", Toast.LENGTH_SHORT).show();
-                    submit.setEnabled(true);
                     return;
                 } else if (passWord.length() < 6) {
                     Toast.makeText(LoginUser.this, "密码长度太短，请输入至少六位!", Toast.LENGTH_SHORT).show();
-                    submit.setEnabled(true);
                     return;
                 } else {
+                    submit.setEnabled(false);
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -146,7 +154,7 @@ public class LoginUser extends AppCompatActivity {
                             }
 
                             String respond = PostRequest.post(RegisterUser.URL + "/login", json);
-                            Log.d("登录测试", respond);
+                            if (respond == null) return;
                             try {
                                 result1 = JsonUtils.jsonToResult(respond);
 
@@ -158,13 +166,17 @@ public class LoginUser extends AppCompatActivity {
                     });
                     thread.start();
                     try {
-                        thread.join();
+                        thread.join(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    submit.setEnabled(true);
+                    if(result1 == null){
+                        Toast.makeText(LoginUser.this,"网络连接失败！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (result1.getCode() == 0) {
                         Toast.makeText(LoginUser.this, result1.getMsg(), Toast.LENGTH_SHORT).show();
-                        submit.setEnabled(true);
                     }
 
                     //跳转到主页面

@@ -11,14 +11,26 @@ public class Option {
     //所属问题ID
     private Integer problemId;
 
+    //多少人选过此选项
+    private Integer count;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public Option() {
     }
 
-    public Option(Integer optionId, String optionNum, String content, Integer problemId) {
+    public Option(Integer optionId, String optionNum, String content, Integer problemId, Integer count) {
         this.optionId = optionId;
         this.optionNum = optionNum;
         this.content = content;
         this.problemId = problemId;
+        this.count = count;
     }
 
     public Integer getOptionId() {

@@ -10,6 +10,17 @@ public class Questionnaire {
     //问卷标题
     private String title;
 
+    public Integer getPeople() {
+        return people;
+    }
+
+    public void setPeople(Integer people) {
+        this.people = people;
+    }
+
+    //填写问卷的人数
+    private Integer people;
+
     public Integer getQuestionnaireId() {
         return questionnaireId;
     }
@@ -58,9 +69,10 @@ public class Questionnaire {
         this.problems = problems;
     }
 
-    public Questionnaire(Integer questionnaireId, String title, String createTime, String updateTime, String username, ArrayList<Problem> problems) {
+    public Questionnaire(Integer questionnaireId, String title, Integer people, String createTime, String updateTime, String username, ArrayList<Problem> problems) {
         this.questionnaireId = questionnaireId;
         this.title = title;
+        this.people = people;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.username = username;

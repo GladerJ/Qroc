@@ -37,7 +37,7 @@ public class RegisterUser extends AppCompatActivity {
     private Result result2;//用来存取邮箱是否存在的结果
     private Result result3;//用来存取验证码是否正确
     private Result result4;//注册完成后的结果
-    public static final String URL = "http://192.168.246.243:8080";
+    public static final String URL = "http://192.168.0.197:8080";
 
 
     public final static Pattern partern = Pattern.compile("[a-zA-Z0-9]+[\\.]{0,1}[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
@@ -169,26 +169,24 @@ public class RegisterUser extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             //Toast.makeText(RegisterUser.this, result4.getMsg(), Toast.LENGTH_SHORT).show();
-                            submit.setOnClickListener(new View.OnClickListener() {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterUser.this);
+                            builder.setTitle("系统提示：").setMessage("注册用户成功！");
+                            builder.setIcon(R.mipmap.ic_launcher_round);
+                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterUser.this);
-                                    builder.setTitle("系统提示：").setMessage("注册用户成功！");
-                                    builder.setIcon(R.mipmap.ic_launcher_round);
-                                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            //Toast.makeText(builder.getContext(), "你的手机已中毒",Toast.LENGTH_SHORT).show();
-                                            /**注册成功后跳转到LoginUser页面
-                                             */
-                                            Intent intent = new Intent(RegisterUser.this,LoginUser.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                    builder.show();
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //Toast.makeText(builder.getContext(), "你的手机已中毒",Toast.LENGTH_SHORT).show();
+                                    /**注册成功后跳转到LoginUser页面
+                                     */
+                                    Intent intent = new Intent(RegisterUser.this,LoginUser.class);
+                                    intent.putExtra("username",userName);
+                                    intent.putExtra("password",passport);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             });
+                            builder.setCancelable(false);
+                            builder.show();
                         }
 
 
