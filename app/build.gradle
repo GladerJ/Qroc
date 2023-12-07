@@ -50,6 +50,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
     implementation 'com.tencent:mmkv-static:1.2.2'
+    implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
 
 
 

@@ -1,5 +1,7 @@
 package com.example.qroc;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import com.example.qroc.handler.TokenThread;
+import com.example.qroc.pojo.behind.Questionnaire;
+import com.example.qroc.util.JsonUtils;
+import com.example.qroc.util.MMKVUtils;
+import com.example.qroc.util.PostRequest;
+import com.example.qroc.util.Result;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -103,10 +113,101 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 在这里处理按钮点击事件的逻辑
+                MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+                String token = MMKVUtils.getString("token");
+                if (token == null) {
+                    loginOutDate();
+                    return;
+                }
+                TokenThread thread = new TokenThread();
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (thread.getResult().getCode() == 0) {
+                    loginOutDate();
+                    return;
+                }
+
                 Intent intent = new Intent(MainActivity.this, CreateQuestionnaire.class);
+                startActivity(intent);
+
+            }
+        });
+
+        Button searchButton = views.get(0).findViewById(R.id.search_it);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 在这里处理按钮点击事件的逻辑
+                MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+                String token = MMKVUtils.getString("token");
+                if (token == null) {
+                    loginOutDate();
+                    return;
+                }
+                TokenThread thread1 = new TokenThread();
+                thread1.start();
+                try {
+                    thread1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (thread1.getResult().getCode() == 0) {
+                    loginOutDate();
+                    return;
+                }
+
+                Intent intent = new Intent(MainActivity.this, QuestionnaireActivity.class);
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Questionnaire questionnaire = new Questionnaire();
+                        questionnaire.setQuestionnaireId(23L);
+                        try {
+                            respond = PostRequest.post(RegisterUser.URL + "/searchQuestionnaire", JsonUtils.objectToJson(questionnaire));
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("questionnaire", respond);
                 startActivity(intent);
             }
         });
     }
+
+    String respond;
+
+    public void loginOutDate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("系统提示：").setMessage("登录失效，请重新登录！");
+        builder.setIcon(R.mipmap.ic_launcher_round);
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(builder.getContext(), "你的手机已中毒",Toast.LENGTH_SHORT).show();
+                /**注册成功后跳转到LoginUser页面
+                 */
+                Intent intent = new Intent(MainActivity.this, LoginUser.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setCancelable(false);
+        builder.show();
+    }
 }
+
+
+
 

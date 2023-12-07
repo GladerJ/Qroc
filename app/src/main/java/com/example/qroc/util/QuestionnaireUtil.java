@@ -29,7 +29,7 @@ public class QuestionnaireUtil {
             TextView textView = (TextView) problemView.getLinearLayout().getChildAt(0);
             String tmp = textView.getText().toString();
             tmp = tmp.replace('.',' ');
-            problem.setNum(Integer.parseInt(tmp.trim()));
+            problem.setNum(Long.parseLong(tmp.trim()));
             ArrayList<EditText> editTexts = problemView.getOptions();
             ArrayList<TextView> textViews = problemView.getOptionsTv();
             LinearLayout linearLayout = problemView.getLinearLayout();

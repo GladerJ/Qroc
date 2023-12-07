@@ -33,7 +33,7 @@
                     android:layout_height="match_parent"
                     android:text="搜索问卷"
                     android:textColor="#000000"
-                    android:background="@drawable/text_selector" android:textSize="20sp"/>
+                    android:background="@drawable/text_selector" android:textSize="20sp" android:id="@+id/search_it"/>
 
         </androidx.cardview.widget.CardView>
 

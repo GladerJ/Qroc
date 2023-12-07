@@ -1,36 +1,72 @@
 package com.example.qroc.pojo.behind;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Problem {
-    //问题ID
-    private Integer problemId;
-    //所属问卷ID
-    private Integer questionnaireId;
-    //问题序号
-    private Integer num;
+public class Problem implements Serializable {
 
-    public Integer getProblemId() {
+    @JsonProperty("problemId")
+    private Long problemId;
+
+    @JsonProperty("questionnaireId")
+    private Long questionnaireId;
+
+    @JsonProperty("num")
+    private Long num;
+
+    @JsonProperty("content")
+    private String content;
+
+    @JsonProperty("isMultipleChoice")
+    private int isMultipleChoice;
+
+    @JsonProperty("options")
+    private ArrayList<Option> options;
+
+    public Long getProblemId() {
         return problemId;
     }
 
-    public void setProblemId(Integer problemId) {
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "problemId=" + problemId +
+                ", questionnaireId=" + questionnaireId +
+                ", num=" + num +
+                ", content='" + content + '\'' +
+                ", isMultipleChoice=" + isMultipleChoice +
+                ", options=" + options +
+                '}';
+    }
+
+    public Problem(Long problemId, Long questionnaireId, Long num, String content, int isMultipleChoice, ArrayList<Option> options) {
+        this.problemId = problemId;
+        this.questionnaireId = questionnaireId;
+        this.num = num;
+        this.content = content;
+        this.isMultipleChoice = isMultipleChoice;
+        this.options = options;
+    }
+
+    public void setProblemId(Long problemId) {
         this.problemId = problemId;
     }
 
-    public Integer getQuestionnaireId() {
+    public Long getQuestionnaireId() {
         return questionnaireId;
     }
 
-    public void setQuestionnaireId(Integer questionnaireId) {
+    public void setQuestionnaireId(Long questionnaireId) {
         this.questionnaireId = questionnaireId;
     }
 
-    public Integer getNum() {
+    public Long getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Long num) {
         this.num = num;
     }
 
@@ -58,25 +94,13 @@ public class Problem {
         this.options = options;
     }
 
-    public Problem(Integer problemId, Integer questionnaireId, Integer num, String content, int isMultipleChoice, ArrayList<Option> options) {
-        this.problemId = problemId;
-        this.questionnaireId = questionnaireId;
-        this.num = num;
-        this.content = content;
-        this.isMultipleChoice = isMultipleChoice;
-        this.options = options;
-    }
-
-    //问题内容
-    private String content;
-    //是否是多选 1是，0否
-    private int isMultipleChoice;
-    //选项集合
     public Problem(){
         options = new ArrayList<>();
     }
-    private ArrayList<Option> options;
     public void addOption(Option option){
         options.add(option);
+    }
+    public Option getOption(int index){
+        return options.get(index);
     }
 }

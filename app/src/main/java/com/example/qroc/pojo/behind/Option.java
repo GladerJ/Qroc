@@ -1,31 +1,41 @@
 package com.example.qroc.pojo.behind;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Option {
-    //选项ID
-    private Integer optionId;
-    //选项号，如ABCD...
+import java.io.Serializable;
+
+
+public class Option implements Serializable {
+    @Override
+    public String toString() {
+        return "Option{" +
+                "optionId=" + optionId +
+                ", optionNum='" + optionNum + '\'' +
+                ", content='" + content + '\'' +
+                ", problemId=" + problemId +
+                ", count=" + count +
+                '}';
+    }
+
+    @JsonProperty("optionId")
+    private Long optionId;
+
+    @JsonProperty("optionNum")
     private String optionNum;
-    //选项内容
+
+    @JsonProperty("content")
     private String content;
-    //所属问题ID
-    private Integer problemId;
 
-    //多少人选过此选项
-    private Integer count;
+    @JsonProperty("problemId")
+    private Long problemId;
 
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
+    @JsonProperty("count")
+    private Long count;
 
     public Option() {
     }
 
-    public Option(Integer optionId, String optionNum, String content, Integer problemId, Integer count) {
+    public Option(Long optionId, String optionNum, String content, Long problemId, Long count) {
         this.optionId = optionId;
         this.optionNum = optionNum;
         this.content = content;
@@ -33,11 +43,11 @@ public class Option {
         this.count = count;
     }
 
-    public Integer getOptionId() {
+    public Long getOptionId() {
         return optionId;
     }
 
-    public void setOptionId(Integer optionId) {
+    public void setOptionId(Long optionId) {
         this.optionId = optionId;
     }
 
@@ -57,11 +67,19 @@ public class Option {
         this.content = content;
     }
 
-    public Integer getProblemId() {
+    public Long getProblemId() {
         return problemId;
     }
 
-    public void setProblemId(Integer problemId) {
+    public void setProblemId(Long problemId) {
         this.problemId = problemId;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 }
