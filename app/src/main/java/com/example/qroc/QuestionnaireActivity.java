@@ -77,6 +77,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
                         postOptions.add(problem.getOption(index).getOptionId());
                     }
                 }
+                postOptions.add(questionnaire.getQuestionnaireId());
                 SubmitQuestionnaireAsyncTask submitQuestionnaireAsyncTask = new SubmitQuestionnaireAsyncTask(QuestionnaireActivity.this,postOptions);
                 submitQuestionnaireAsyncTask.execute();
             }

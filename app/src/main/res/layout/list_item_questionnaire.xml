@@ -1,0 +1,90 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_margin="16dp"
+             android:background="@drawable/border">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <TextView
+                android:id="@+id/idTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="问卷ID" />
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+        <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="问卷名称" />
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/modifyButton"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="修改" />
+
+            <View
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+            <Button
+                    android:id="@+id/viewButton"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="查看" />
+
+            <View
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+            <Button
+                    android:id="@+id/deleteButton"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="删除" />
+
+            <View
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+            <Button
+                    android:id="@+id/copyButton"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:text="ID"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/border">
+
+            <!-- 这里是问卷内容 -->
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
