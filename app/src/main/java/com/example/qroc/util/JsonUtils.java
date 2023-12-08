@@ -1,5 +1,6 @@
 package com.example.qroc.util;
 
+import com.example.qroc.pojo.User;
 import com.example.qroc.pojo.behind.Problem;
 import com.example.qroc.pojo.behind.Questionnaire;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +20,12 @@ public class JsonUtils {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, Result.class);
     }
-
+    public static User jsonToUser(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Result result = jsonToResult(json);
+        String tmpJson = objectToJson(result.getData());
+        return objectMapper.readValue(tmpJson, User.class);
+    }
     public static Questionnaire jsonToQuestionnaire(String json) throws JsonProcessingException {
         Result result = jsonToResult(json);
         String tmpJson = objectToJson(result.getData());

@@ -147,9 +147,15 @@ public class CreateQuestionnaire extends AppCompatActivity {
     private int questionCount = 0; // 跟踪题目数量的变量
 
     public void addOption(Option option1,LinearLayout newLayout,LinearLayout buttonLayout,ProblemView problemView,int margin,CheckBox checkBox){
+        char c = ((char) ('A' + (newLayout.getChildCount() - 3) / 2));
+        if(c > 'Z') {
+            Toast.makeText(CreateQuestionnaire.this,"最多只能26个选项！",Toast.LENGTH_SHORT).show();
+            return;
+        }
         // 创建选项序号的TextView
         TextView optionNumberTextView = new TextView(CreateQuestionnaire.this);
         optionNumberTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         optionNumberTextView.setText(Character.toString((char) ('A' + (newLayout.getChildCount() - 3) / 2)) + ". "); // 使用字母标号，从A开始
         newLayout.addView(optionNumberTextView);
         LinearLayout.LayoutParams optionNumberTextViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

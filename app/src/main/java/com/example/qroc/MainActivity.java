@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import com.example.qroc.handler.AiCreateQuestionnaireAsyncTask;
-import com.example.qroc.handler.SearchQuestionnaireAsyncTask;
-import com.example.qroc.handler.TokenThread;
+import com.example.qroc.handler.*;
 import com.example.qroc.pojo.behind.Questionnaire;
 import com.example.qroc.util.JsonUtils;
 import com.example.qroc.util.MMKVUtils;
@@ -35,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     private RadioButton tab1, tab2;
     private List<View> views;
-
+    private TextView username;
+    private TextView email;
+    private Button exit;
     private String token;
 
     @Override
@@ -46,7 +46,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main);
 
         initView();
+        MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+        token = MMKVUtils.getString("token");
 
+        username = views.get(1).findViewById(R.id.text1);
+        email = views.get(1).findViewById(R.id.text2);
+        exit = views.get(1).findViewById(R.id.exit);
+
+        if(token != null){
+            MineAsyncTas mineAsyncTask = new MineAsyncTas(MainActivity.this,token);
+            mineAsyncTask.execute();
+        }
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("退出提示").setMessage("您确定要退出此账号吗？");
+                builder.setIcon(R.mipmap.ic_launcher_round);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
+                        MMKVUtils.removeKey("token");
+                        Intent intent = new Intent(MainActivity.this,LoginUser.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.show();
+
+            }
+        });
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -62,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void setUsername1(String s){
+        username.setText("用户名:"+s);
+    }
+
+    public void setEmail(String s){
+        email.setText("邮箱:"+s);
     }
 
     private void initView() {
@@ -188,22 +232,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 在这里处理按钮点击事件的逻辑
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("请输入你要搜索的问卷id：");
-                final EditText searchEditText = new EditText(MainActivity.this);
-                builder.setView(searchEditText);
-                builder.setPositiveButton("搜索", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String searchText = searchEditText.getText().toString();
-                        SearchQuestionnaireAsyncTask searchQuestionnaireAsyncTask = new SearchQuestionnaireAsyncTask(MainActivity.this,Long.parseLong(searchText));
-                        searchQuestionnaireAsyncTask.execute();
-                    }
-                });
-                builder.setNegativeButton("取消", null);
-                builder.setCancelable(false);
-                builder.show();
-            }
+
+                    // Handle button click event here
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("请输入你要搜索的问卷id：");
+
+                    // Create a LinearLayout to hold the EditText
+                    LinearLayout layout = new LinearLayout(MainActivity.this);
+                    layout.setOrientation(LinearLayout.VERTICAL);
+                    layout.setPadding(60, 0, 60, 0); // Adjust the padding as needed
+
+                    // Create the EditText and set its layout parameters
+                    final EditText searchEditText = new EditText(MainActivity.this);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    layoutParams.setMargins(0, 32, 0, 0); // Adjust the margins as needed
+                    searchEditText.setLayoutParams(layoutParams);
+
+                    // Add the EditText to the LinearLayout
+                    layout.addView(searchEditText);
+
+                    // Set the custom view in the AlertDialog
+                    builder.setView(layout);
+
+                    builder.setPositiveButton("搜索", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String searchText = searchEditText.getText().toString();
+                            SearchQuestionnaireAsyncTask searchQuestionnaireAsyncTask = new SearchQuestionnaireAsyncTask(MainActivity.this, Long.parseLong(searchText));
+                            searchQuestionnaireAsyncTask.execute();
+                        }
+                    });
+
+                    builder.setNegativeButton("取消", null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
         });
 
         Button having = views.get(0).findViewById(R.id.have_it);
@@ -223,18 +289,36 @@ public class MainActivity extends AppCompatActivity {
                 // 在这里处理按钮点击事件的逻辑
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("请输入你要生成的问卷类型，不要包含特殊字符，请文明输入：");
+
+                // Create a LinearLayout to hold the EditText
+                LinearLayout layout = new LinearLayout(MainActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setPadding(60, 0, 60, 0); // Adjust the padding as needed
+
+                // Create the EditText and set its layout parameters
                 final EditText searchEditText = new EditText(MainActivity.this);
-                builder.setView(searchEditText);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                layoutParams.setMargins(0, 32, 0, 0); // Adjust the margins as needed
+                searchEditText.setLayoutParams(layoutParams);
+
+                // Add the EditText to the LinearLayout
+                layout.addView(searchEditText);
+
+                // Set the custom view in the AlertDialog
+                builder.setView(layout);
+
                 builder.setPositiveButton("生成", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(MainActivity.this,CreateQuestionnaire.class);
-                        intent.putExtra("ai",searchEditText.getText().toString());
+                        Intent intent = new Intent(MainActivity.this, CreateQuestionnaire.class);
+                        intent.putExtra("ai", searchEditText.getText().toString());
                         startActivity(intent);
-
                     }
                 });
+
                 builder.setNegativeButton("取消", null);
                 builder.setCancelable(false);
                 builder.show();

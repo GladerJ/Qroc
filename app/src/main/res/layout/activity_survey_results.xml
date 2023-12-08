@@ -10,7 +10,7 @@
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:padding="16dp"
             android:gravity="center" />
@@ -28,6 +28,7 @@
 
             <TextView
                     android:text="创建时间"
+                    android:textSize="20sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/create_time_2"
@@ -35,6 +36,7 @@
 
             <TextView
                     android:text="更新时间"
+                    android:textSize="20sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/update_time_2"
@@ -42,6 +44,7 @@
 
             <TextView
                     android:text="已有0人填写了该问卷"
+                    android:textSize="20sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/people"

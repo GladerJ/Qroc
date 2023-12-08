@@ -102,12 +102,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         TextView questionTextView = new TextView(this);
         questionTextView.setText(problem.getNum() + "." + question);
+        questionTextView.setTextSize(20);
         problemLayout.addView(questionTextView);
 
         if (isMultipleChoice) {
             for (Option option : options) {
                 CheckBox checkBox = new CheckBox(this);
                 checkBox.setText(option.getOptionNum() + option.getContent());
+                checkBox.setTextSize(18);
                 problemLayout.addView(checkBox);
             }
         } else {
@@ -115,6 +117,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
             for (Option option : options) {
                 RadioButton radioButton = new RadioButton(this);
                 radioButton.setText(option.getOptionNum() + option.getContent());
+                radioButton.setTextSize(18);
                 radioGroup.addView(radioButton);
             }
             problemLayout.addView(radioGroup);
