@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import com.example.qroc.handler.AiCreateQuestionnaireAsyncTask;
 import com.example.qroc.handler.SearchQuestionnaireAsyncTask;
 import com.example.qroc.handler.TokenThread;
 import com.example.qroc.pojo.behind.Questionnaire;
@@ -212,6 +213,31 @@ public class MainActivity extends AppCompatActivity {
                 // 在这里处理按钮点击事件的逻辑
                 Intent intent = new Intent(MainActivity.this,ShowQuestionnaire.class);
                 startActivity(intent);
+            }
+        });
+
+        Button aiButton = views.get(0).findViewById(R.id.ai);
+        aiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 在这里处理按钮点击事件的逻辑
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("请输入你要生成的问卷类型，不要包含特殊字符，请文明输入：");
+                final EditText searchEditText = new EditText(MainActivity.this);
+                builder.setView(searchEditText);
+                builder.setPositiveButton("生成", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(MainActivity.this,CreateQuestionnaire.class);
+                        intent.putExtra("ai",searchEditText.getText().toString());
+                        startActivity(intent);
+
+                    }
+                });
+                builder.setNegativeButton("取消", null);
+                builder.setCancelable(false);
+                builder.show();
             }
         });
     }

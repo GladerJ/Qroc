@@ -47,13 +47,13 @@ public class Questionnaire implements Serializable {
     private String username;
 
     @JsonProperty("problems")
-    private ArrayList<Problem> problems;
+    private ArrayList<Problem> problems  = new ArrayList<>();;
 
     @JsonProperty("people")
     private Long people;
 
     public Questionnaire(){
-        problems = new ArrayList<>();
+
     }
 
     public Long getQuestionnaireId() {

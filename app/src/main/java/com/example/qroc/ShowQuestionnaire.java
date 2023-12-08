@@ -86,6 +86,10 @@ public class ShowQuestionnaire extends AppCompatActivity {
                 public void onClick(View v) {
                     // 处理修改按钮点击事件
                    // Toast.makeText(ShowQuestionnaire.this, "点击了修改按钮，问卷ID：" + questionnaire.getId(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ShowQuestionnaire.this,CreateQuestionnaire.class);
+                    intent.putExtra("flag",questionnaire.getQuestionnaireId() + "");
+                    startActivity(intent);
+
                 }
             });
 
