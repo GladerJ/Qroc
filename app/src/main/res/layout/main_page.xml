@@ -72,7 +72,23 @@
                         android:textColor="@color/white"
                         android:background="@color/purple_700"
                         android:gravity="center"
-                        android:textSize="28sp"/>
+                        android:textSize="28sp" android:id="@+id/have_it"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:padding="16dp">
+
+                <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="250px"
+                        android:text="AI生成问卷"
+                        android:textColor="@color/white"
+                        android:background="@color/purple_700"
+                        android:gravity="center"
+                        android:textSize="28sp" android:id="@+id/ai"/>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 

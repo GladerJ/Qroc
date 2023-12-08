@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.qroc.handler.ModifyUI;
+import com.example.qroc.handler.RegisterAsyncTask;
 import com.example.qroc.pojo.Mail;
 import com.example.qroc.pojo.User;
 import com.example.qroc.util.JsonUtils;
@@ -33,10 +34,7 @@ import java.util.regex.Pattern;
 
 public class RegisterUser extends AppCompatActivity {
 
-    private Result result1;//用来存取用户名是否存在的结果
     private Result result2;//用来存取邮箱是否存在的结果
-    private Result result3;//用来存取验证码是否正确
-    private Result result4;//注册完成后的结果
     public static final String URL = "http://192.168.0.197:8080";
 
 
@@ -105,92 +103,8 @@ public class RegisterUser extends AppCompatActivity {
                 } else if (!usernameFormat(userName)) {
                     Toast.makeText(RegisterUser.this, "用户名只能包含大小写字母和数字!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Thread thread1 = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            User user = new User();
-                            user.setUsername(userName);
-                            try {
-                                result1 = JsonUtils.jsonToResult(PostRequest.post(URL + "/existUsername", JsonUtils.objectToJson(user)));
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    thread1.start();
-                    try {
-                        thread1.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (result1.getCode() == 0) {
-                        Toast.makeText(RegisterUser.this, result1.getMsg(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Thread thread2 = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Mail verifyMail = new Mail();
-                                verifyMail.setEmail(mail);
-                                verifyMail.setCode((verifyCode.getText().toString()));
-                                try {
-                                    result3 = JsonUtils.jsonToResult(PostRequest.post(URL+"/verify", JsonUtils.objectToJson(verifyMail)));
-                                } catch (JsonProcessingException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        thread2.start();
-                        try {
-                            thread2.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (result3 != null && result3.getCode() == 0) {
-                            Toast.makeText(RegisterUser.this, result3.getMsg(), Toast.LENGTH_SHORT).show();
-                        } else if (result3 != null) {
-                            Thread thread3 = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    User user = new User();
-                                    user.setUsername(userName);
-                                    user.setEmail(mail);
-                                    user.setPassword(passport);
-                                    try {
-                                        result4 = JsonUtils.jsonToResult(PostRequest.post(URL+"/register", JsonUtils.objectToJson(user)));
-                                    } catch (JsonProcessingException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                            thread3.start();
-                            try {
-                                thread3.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            //Toast.makeText(RegisterUser.this, result4.getMsg(), Toast.LENGTH_SHORT).show();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterUser.this);
-                            builder.setTitle("系统提示：").setMessage("注册用户成功！");
-                            builder.setIcon(R.mipmap.ic_launcher_round);
-                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //Toast.makeText(builder.getContext(), "你的手机已中毒",Toast.LENGTH_SHORT).show();
-                                    /**注册成功后跳转到LoginUser页面
-                                     */
-                                    Intent intent = new Intent(RegisterUser.this,LoginUser.class);
-                                    intent.putExtra("username",userName);
-                                    intent.putExtra("password",passport);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                            builder.setCancelable(false);
-                            builder.show();
-                        }
-
-
-                    }
+                    RegisterAsyncTask registerAsyncTask = new RegisterAsyncTask(userName,passport,mail,verifyCode,RegisterUser.this);
+                    registerAsyncTask.execute();
                 }
 
 

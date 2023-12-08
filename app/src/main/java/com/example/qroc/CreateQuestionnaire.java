@@ -8,7 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.qroc.handler.AiCreateQuestionnaireAsyncTask;
+import com.example.qroc.handler.UpdateQuestionnaireAsyncTask;
 import com.example.qroc.pojo.ProblemView;
+import com.example.qroc.pojo.behind.Option;
+import com.example.qroc.pojo.behind.Problem;
 import com.example.qroc.pojo.behind.Questionnaire;
 import com.example.qroc.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,7 +44,9 @@ public class CreateQuestionnaire extends AppCompatActivity {
         setContentView(R.layout.create_questionnaire);
         save = findViewById(R.id.save);
         title = findViewById(R.id.q_title);
-
+        Intent intent = getIntent();
+        String flag = intent.getStringExtra("flag");
+        String ai = intent.getStringExtra("ai");
         save.setOnClickListener(e -> {
             MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
             username = MMKVUtils.getString("token");
@@ -110,7 +116,7 @@ public class CreateQuestionnaire extends AppCompatActivity {
         createLayoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createDynamicLayout();
+                addProblem(null);
                 mainLayout.removeView(save);
                 mainLayout.addView(save);
                 scrollView.post(new Runnable() {
@@ -121,11 +127,54 @@ public class CreateQuestionnaire extends AppCompatActivity {
                 });
             }
         });
+
+        if(flag != null){
+            UpdateQuestionnaireAsyncTask updateQuestionnaireAsyncTask = new UpdateQuestionnaireAsyncTask(CreateQuestionnaire.this,Long.parseLong(flag),mainLayout,save);
+            updateQuestionnaireAsyncTask.execute();
+        }
+        if(ai != null){
+            AiCreateQuestionnaireAsyncTask aiCreateQuestionnaireAsyncTask = new AiCreateQuestionnaireAsyncTask(CreateQuestionnaire.this,ai,mainLayout,save);
+            aiCreateQuestionnaireAsyncTask.execute();
+        }
+    }
+
+    public void setTitle(String title1){
+        if(title1 != null){
+            title.setText(title1);
+        }
     }
 
     private int questionCount = 0; // 跟踪题目数量的变量
 
-    private void createDynamicLayout() {
+    public void addOption(Option option1,LinearLayout newLayout,LinearLayout buttonLayout,ProblemView problemView,int margin,CheckBox checkBox){
+        // 创建选项序号的TextView
+        TextView optionNumberTextView = new TextView(CreateQuestionnaire.this);
+        optionNumberTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        optionNumberTextView.setText(Character.toString((char) ('A' + (newLayout.getChildCount() - 3) / 2)) + ". "); // 使用字母标号，从A开始
+        newLayout.addView(optionNumberTextView);
+        LinearLayout.LayoutParams optionNumberTextViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        optionNumberTextViewParams.setMargins(margin, margin, margin, 0); // 设置上下左右内边距
+        optionNumberTextView.setLayoutParams(optionNumberTextViewParams);
+        // 创建选项输入框
+        EditText optionEditText = new EditText(CreateQuestionnaire.this);
+        if(option1 != null){
+            optionEditText.setText(option1.getContent());
+        }
+        LinearLayout.LayoutParams optionEditTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1); // 使用weight属性让输入框填充剩余空间
+        optionEditTextParams.setMargins(margin, 0, margin, 0); // 设置左右外边距
+        optionEditText.setLayoutParams(optionEditTextParams);
+        optionEditText.setPadding(margin, margin, margin, margin); // 设置上下左右内边距
+        optionEditText.setHint("请输入选项");
+        newLayout.addView(optionEditText);
+        newLayout.removeView(buttonLayout);
+        newLayout.addView(buttonLayout);
+        problemView.setLinearLayout(newLayout);
+        problemView.addOption(optionEditText, optionNumberTextView);
+        newLayout.removeView(checkBox);
+        newLayout.addView(checkBox);
+    }
+
+    public void addProblem(Problem problem1){
         // 创建一个新的线性布局
         LinearLayout newLayout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -148,6 +197,8 @@ public class CreateQuestionnaire extends AppCompatActivity {
 
         // 创建问题输入框
         EditText questionEditText = new EditText(this);
+        if(problem1 != null)
+            questionEditText.setText(problem1.getContent());
         LinearLayout.LayoutParams questionEditTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1); // 使用weight属性让输入框填充剩余空间
         questionEditTextParams.setMargins(margin, 0, margin, 0); // 设置左右外边距
         questionEditText.setLayoutParams(questionEditTextParams);
@@ -157,6 +208,7 @@ public class CreateQuestionnaire extends AppCompatActivity {
 
         LinearLayout buttonLayout = new LinearLayout(this);
         buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+
 
 
         // 创建增加选项的按钮
@@ -203,34 +255,19 @@ public class CreateQuestionnaire extends AppCompatActivity {
         mainLayout.addView(newLayout);
         mainLayout.addView(createLayoutButton);
 
+        if(problem1 != null){
+            ArrayList<Option> options = problem1.getOptions();
+            options.stream().forEach(option -> {
+                addOption(option,newLayout,buttonLayout,problemView,margin,checkBox);
+            });
+        }
+
 
         // 为增加选项的按钮添加点击事件
         addOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 创建选项序号的TextView
-                TextView optionNumberTextView = new TextView(CreateQuestionnaire.this);
-                optionNumberTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                optionNumberTextView.setText(Character.toString((char) ('A' + (newLayout.getChildCount() - 3) / 2)) + ". "); // 使用字母标号，从A开始
-                newLayout.addView(optionNumberTextView);
-                LinearLayout.LayoutParams optionNumberTextViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                optionNumberTextViewParams.setMargins(margin, margin, margin, 0); // 设置上下左右内边距
-                optionNumberTextView.setLayoutParams(optionNumberTextViewParams);
-                // 创建选项输入框
-                EditText optionEditText = new EditText(CreateQuestionnaire.this);
-                LinearLayout.LayoutParams optionEditTextParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1); // 使用weight属性让输入框填充剩余空间
-                optionEditTextParams.setMargins(margin, 0, margin, 0); // 设置左右外边距
-                optionEditText.setLayoutParams(optionEditTextParams);
-                optionEditText.setPadding(margin, margin, margin, margin); // 设置上下左右内边距
-                optionEditText.setHint("请输入选项");
-                newLayout.addView(optionEditText);
-                newLayout.removeView(buttonLayout);
-                newLayout.addView(buttonLayout);
-                problemView.setLinearLayout(newLayout);
-                problemView.addOption(optionEditText, optionNumberTextView);
-                newLayout.removeView(checkBox);
-                newLayout.addView(checkBox);
-
+                addOption(null,newLayout,buttonLayout,problemView,margin,checkBox);
             }
         });
 
@@ -257,5 +294,7 @@ public class CreateQuestionnaire extends AppCompatActivity {
 
         problemViews.add(problemView);
     }
+
+
 
 }

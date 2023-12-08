@@ -8,16 +8,14 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.qroc.pojo.User;
+import com.example.qroc.handler.LoginAsyncTask;
 import com.example.qroc.util.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.regex.Pattern;
 
@@ -98,13 +96,13 @@ public class LoginUser extends AppCompatActivity {
         //提交按钮
         Button submit = findViewById(R.id.submit);
 
-        if(intent != null){
+        if (intent != null) {
             String username = intent.getStringExtra("username");
             String password = intent.getStringExtra("password");
-            if(username != null){
+            if (username != null) {
                 usernameInuput.setText(username);
             }
-            if(password != null){
+            if (password != null) {
                 passwordInput.setText(password);
             }
         }
@@ -115,7 +113,7 @@ public class LoginUser extends AppCompatActivity {
             public void onClick(View v) {
                 String userName = usernameInuput.getText().toString();
                 String passWord = passwordInput.getText().toString();
-                if(!agreementConfirm.isChecked()){
+                if (!agreementConfirm.isChecked()) {
                     Toast.makeText(LoginUser.this, "请先同意用户协议与隐私政策!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -137,63 +135,12 @@ public class LoginUser extends AppCompatActivity {
                     return;
                 } else {
                     submit.setEnabled(false);
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            User user = new User();
-                            //:lpl
-                            //:123456
-                            //{"username":"lpl","password":"123456"}
-                            user.setUsername(userName);
-                            user.setPassword(passWord);
-                            String json = null;
-                            try {
-                                json = JsonUtils.objectToJson(user);
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
-
-                            String respond = PostRequest.post(RegisterUser.URL + "/login", json);
-                            if (respond == null) return;
-                            try {
-                                result1 = JsonUtils.jsonToResult(respond);
-
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    });
-                    thread.start();
-                    try {
-                        thread.join(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    LoginAsyncTask loginAsyTask = new LoginAsyncTask(userName,passWord,LoginUser.this,getFilesDir().getAbsolutePath() + "/tmp");
+                    loginAsyTask.execute();
                     submit.setEnabled(true);
-                    if(result1 == null){
-                        Toast.makeText(LoginUser.this,"网络连接失败！", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (result1.getCode() == 0) {
-                        Toast.makeText(LoginUser.this, result1.getMsg(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    //跳转到主页面
-                    else {
-                        Toast.makeText(LoginUser.this, "登陆成功！", Toast.LENGTH_SHORT).show();
-
-                        MMKVUtils.init(getFilesDir().getAbsolutePath() + "/tmp");
-                        MMKVUtils.putString("token",(String)result1.getData());
 
 
-                        Intent intent = new Intent(LoginUser.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-
-                    }
                 }
-
             }
         });
 

@@ -70,14 +70,14 @@ public class MyAsyncTask extends AsyncTask<Void,Integer,Boolean> {
         thread.start();
 
         for(int i=1;i<=1000;i++){
-            onProgressUpdate(i);
+            publishProgress(i);
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if(i >= 50 && result != null){
-                onProgressUpdate(1000);
+                publishProgress(1000);
                 loading.decide(result);
                 return true;
             }

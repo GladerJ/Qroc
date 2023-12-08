@@ -1,31 +1,66 @@
 package com.example.qroc.pojo.behind;
 
-import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class Questionnaire {
-    //问卷ID
-    private Integer questionnaireId;
-    //问卷标题
-    private String title;
-
-    public Integer getPeople() {
-        return people;
+public class Questionnaire implements Serializable {
+    @Override
+    public String toString() {
+        return "Questionnaire{" +
+                "questionnaireId=" + questionnaireId +
+                ", title='" + title + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", username='" + username + '\'' +
+                ", problems=" + problems +
+                ", people=" + people +
+                '}';
     }
 
-    public void setPeople(Integer people) {
+    public Questionnaire(Long questionnaireId, String title, String createTime, String updateTime, String username, ArrayList<Problem> problems, Long people) {
+        this.questionnaireId = questionnaireId;
+        this.title = title;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.username = username;
+        this.problems = problems;
         this.people = people;
     }
 
-    //填写问卷的人数
-    private Integer people;
+    @JsonProperty("questionnaireId")
+    private Long questionnaireId;
 
-    public Integer getQuestionnaireId() {
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("createTime")
+    private String createTime;
+
+    @JsonProperty("updateTime")
+    private String updateTime;
+
+    @JsonProperty("username")
+    private String username;
+
+    @JsonProperty("problems")
+    private ArrayList<Problem> problems  = new ArrayList<>();;
+
+    @JsonProperty("people")
+    private Long people;
+
+    public Questionnaire(){
+
+    }
+
+    public Long getQuestionnaireId() {
         return questionnaireId;
     }
 
-    public void setQuestionnaireId(Integer questionnaireId) {
+    public void setQuestionnaireId(Long questionnaireId) {
         this.questionnaireId = questionnaireId;
     }
 
@@ -69,30 +104,19 @@ public class Questionnaire {
         this.problems = problems;
     }
 
-    public Questionnaire(Integer questionnaireId, String title, Integer people, String createTime, String updateTime, String username, ArrayList<Problem> problems) {
-        this.questionnaireId = questionnaireId;
-        this.title = title;
-        this.people = people;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.username = username;
-        this.problems = problems;
+    public Long getPeople() {
+        return people;
     }
 
-    //创建时间
-    private String createTime;
-    //更新修改时间
-    private String updateTime;
-    //所属用户
-    private String username;
-    //问题集合
-    private ArrayList<Problem> problems;
-
-    public Questionnaire(){
-        problems = new ArrayList<>();
+    public void setPeople(Long people) {
+        this.people = people;
     }
 
     public void addProblem(Problem problem){
         problems.add(problem);
+    }
+
+    public Problem getProblem(int index){
+        return problems.get(index);
     }
 }
